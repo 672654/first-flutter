@@ -1,0 +1,7 @@
+directly translated models from database.
+
+This is Data Transfer Objects.
+
+should include .fromJson and .toJson
+
+need mapping extensions to map DTO to domain model.

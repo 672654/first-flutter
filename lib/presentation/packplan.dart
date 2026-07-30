@@ -10,6 +10,7 @@ class PackPlan extends StatefulWidget {
 
 class _PackPlanState extends State<PackPlan> {
   List<dynamic>? _packPlans;
+  String totalGrams = "0";
 
   @override
   void initState() {
@@ -27,10 +28,28 @@ class _PackPlanState extends State<PackPlan> {
 
       setState(() {
         _packPlans = response as List<dynamic>?;
+        totalGrams = calculateTotalGrams();
       });
     } catch (error) {
       print('Error reading pack plans: $error');
     }
+  }
+
+  String calculateTotalGrams() {
+    int total = 0;
+    if (_packPlans != null) {
+      for (var packPlan in _packPlans!) {
+        final utsyrRows =
+            (packPlan['pakningsplan_utstyr'] as List<dynamic>?) ?? [];
+        for (var row in utsyrRows) {
+          final gear = row['gear'] as Map<String, dynamic>?;
+          if (gear != null && gear['grams'] != null) {
+            total += gear['grams'] as int;
+          }
+        }
+      }
+    }
+    return total.toString();
   }
 
   void createPackPlan(String name) async {
@@ -58,7 +77,7 @@ class _PackPlanState extends State<PackPlan> {
 
                 return ExpansionTile(
                   title: Text(packPlan['name'] ?? ''),
-                  subtitle: Text(packPlan['description'] ?? ''),
+                  subtitle: Text('Total: $totalGrams g'),
                   children: utsyrRows.map((row) {
                     final gear = row['gear'] as Map<String, dynamic>?;
                     if (gear == null) {
@@ -67,7 +86,7 @@ class _PackPlanState extends State<PackPlan> {
                     return ListTile(
                       title: Text(gear['name'] ?? ''),
                       subtitle: Text(gear['description'] ?? ''),
-                      trailing: Text('${gear['weight']} g'),
+                      trailing: Text('${gear['grams']} g'),
                     );
                   }).toList(),
                 );

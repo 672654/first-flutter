@@ -1,0 +1,2 @@
+use abstract classes that is implementet by other classes.
+repos use services to communicate with database and mapping-extensions to map from dto to domain objects.

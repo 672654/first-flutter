@@ -1,0 +1,6 @@
+pure business logic.
+
+presentation layer/viewmodel (cubit) knows about this one.
+
+can create functions representing business logic here
+ex: packingplan.dart. totalWeightInGrams() -> ....

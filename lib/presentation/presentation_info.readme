@@ -1,0 +1,10 @@
+Only UI related and viewmodels (Cubit ....)
+
+/core:
+- reusable widgets
+
+/features:
+- use cases with viewmodels and ui-widgets
+- viewmodels use interfaces (abstract classes) of repository.
+- viewmodel only use domain model objects. Never DTO.
+- ui widgets listen to changes in viewmodel and update ui whenever data changes
