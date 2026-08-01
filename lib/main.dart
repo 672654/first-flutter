@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_supabase_pack/presentation/packplan.dart';
+import 'package:flutter_supabase_pack/routing/app_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: PackPlan(),
+    return MaterialApp.router(
+      routerConfig: appRouter,
     );
   }
 }
