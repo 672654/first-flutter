@@ -9,7 +9,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseGearRepositoryImpl implements GearRepository{
 
-  final SupabaseService _supabaseService = SupabaseService();
+  final SupabaseService _supabaseService;
+
+  SupabaseGearRepositoryImpl(this._supabaseService);
 
   @override
   Future<List<Gear>> getAllGear() async {

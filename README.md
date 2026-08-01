@@ -13,9 +13,66 @@ lagres i [Supabase](https://supabase.com/) (Postgres + PostgREST).
 | Pakke | Formål |
 |---|---|
 | [`supabase_flutter`](https://pub.dev/packages/supabase_flutter) | Klient for autentisering og CRUD mot Supabase/Postgres-backend |
+| [`go_router`](https://pub.dev/packages/go_router) | Deklarativ routing/navigasjon, inkl. bunnmeny med `StatefulShellRoute` |
+| [`flutter_bloc`](https://pub.dev/packages/flutter_bloc) | State management (Cubit) - kobler UI til forretningslogikk/repositories |
+| [`equatable`](https://pub.dev/packages/equatable) | Verdi-basert `==`/`hashCode` for Cubit-states, uten manuell boilerplate |
+| [`get_it`](https://pub.dev/packages/get_it) | Service locator for dependency injection (repositories/services) |
 | [`cupertino_icons`](https://pub.dev/packages/cupertino_icons) | iOS-stil ikoner |
 | [`flutter_lints`](https://pub.dev/packages/flutter_lints) (dev) | Anbefalte lint-regler for konsistent kodekvalitet |
 | [`flutter_test`](https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html) (dev) | Rammeverk for widget-/enhetstester |
+
+## Guide: hvordan de sentrale pakkene brukes i dette prosjektet
+
+### `go_router` — navigasjon og bunnmeny
+
+All routing er samlet i `lib/routing/app_router.dart`. Appens faner er definert
+i `AppNavDestination.mainBottomNavDestinations`
+(`lib/presentation/core/navigation/nav_bar_destinations.dart`) - hvert element
+har en `path`, `label`, `icon` og en `screenBuilder`. `app_router.dart`
+genererer automatisk én `StatefulShellBranch` (= én fane) per element i denne
+listen, og `BottomNav`-widgeten (`presentation/core/widgets/bottom_nav.dart`)
+tegner selve `NavigationBar` fra samme liste.
+
+**For å legge til en ny fane i bunnmenyen:** legg kun til et nytt
+`AppNavDestination`-objekt i `mainBottomNavDestinations` - bunnmeny og routing
+oppdateres automatisk, uten å røre `app_router.dart` eller `bottom_nav.dart`.
+
+**For å navigere programmatisk** (f.eks. fra en knapp): bruk
+`context.go('/gear')` eller `context.push('/gear/detaljer')` for nøstede ruter.
+
+### `flutter_bloc` + `equatable` — state management (Cubit)
+
+Hver feature har en `viewmodel/`-mappe med to filer:
+- `<feature>_state.dart` - en `sealed class` med alle mulige tilstander
+  (`Initial`, `Loading`, `Loaded`, `Error`), som extender `Equatable`.
+- `<feature>_cubit.dart` - selve `Cubit<...State>`, som avhenger av et
+  repository-**interface** (aldri en konkret Supabase-implementasjon direkte)
+  og kaller `emit(...)` for å oppdatere tilstanden.
+
+Koblingen til UI skjer i selve skjerm-widgeten (f.eks. `gear_screen.dart`) med
+`BlocProvider` (oppretter Cubit-en) og `BlocBuilder`/`switch` (rebuilder UI når
+state endres). Se `presentation/features/gear_view/` for et komplett eksempel
+å kopiere mønsteret fra ved nye features.
+
+### `get_it` — dependency injection
+
+All registrering av avhengigheter (services, repositories) skjer i
+`lib/core/service_locator.dart`, i funksjonen `setupServiceLocator()`, som
+kalles én gang i `main()` før `runApp()`.
+
+```dart
+sl.registerLazySingleton<SupabaseService>(() => SupabaseService());
+sl.registerLazySingleton<GearRepository>(
+  () => SupabaseGearRepositoryImpl(sl<SupabaseService>()),
+);
+```
+
+**For å legge til en ny feature sitt repository:** registrer interfacet
+(f.eks. `PackPlanRepository`) og dens konkrete implementasjon på samme måte,
+og hent den i skjermens `BlocProvider` med `sl<PackPlanRepository>()` - se
+`gear_screen.dart` for eksempel. Cubits registreres **ikke** i `sl` - de
+opprettes per skjerm-instans via `BlocProvider`, siden hver skjerm skal ha sin
+egen, uavhengige tilstand.
 
 ## Arkitekturvalg
 

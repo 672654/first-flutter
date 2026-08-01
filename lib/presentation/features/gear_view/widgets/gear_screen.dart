@@ -1,7 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_supabase_pack/data/repositories/gear_repo/supabase_gear_repository_impl.dart';
+import 'package:flutter_supabase_pack/core/service_locator.dart';
+import 'package:flutter_supabase_pack/data/repositories/gear_repo/gear_repository_interface.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/gear_cubit.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/gear_state.dart';
 
@@ -13,7 +14,7 @@ class GearScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => GearCubit(SupabaseGearRepositoryImpl())..loadAllGear(),
+      create: (context) => GearCubit(sl<GearRepository>())..loadAllGear(),
       child: const _GearView(),
     );
   }

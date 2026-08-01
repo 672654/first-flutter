@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_supabase_pack/core/service_locator.dart';
 import 'package:flutter_supabase_pack/routing/app_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -9,6 +10,9 @@ Future<void> main() async {
     url: const String.fromEnvironment('SUPABASE_URL'),
     anonKey: const String.fromEnvironment('SUPABASE_ANON_KEY'),
   );
+
+  await setupServiceLocator();
+
   runApp(MyApp());
 }
 

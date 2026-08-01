@@ -2,7 +2,7 @@ import 'package:flutter_supabase_pack/data/model/gear/gear_dto.dart';
 import 'package:flutter_supabase_pack/domain/models/gear.dart';
 
 /// Konverterer data-laget sin DTO til domenelagets rene modell.
-/// Dette er den ENESTE plassen i appen som skal vite at GearDto
+/// Dette er den ene plassen i appen som skal vite at GearDto
 /// finnes - resten av appen (Cubit, UI) bruker kun Gear.
 extension GearDtoMapper on GearDto {
   Gear toDomain() {
