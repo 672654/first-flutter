@@ -3,14 +3,7 @@ import 'package:flutter_supabase_pack/presentation/features/gear_view/widgets/ge
 import 'package:flutter_supabase_pack/presentation/features/trips_view/my_trips_screen.dart';
 import 'package:flutter_supabase_pack/presentation/packplan.dart';
 
-/// Beskriver ÉN fane i bunnmenyen: metadata for UI (label/icon) OG
-/// hvilken skjerm/rute den peker til (path + screenBuilder).
-///
-/// Dette er den ENESTE kilden til sannhet for navigasjon i appen:
-/// - bottom_nav.dart bruker label/icon til å tegne NavigationBar.
-/// - app_router.dart bruker path/screenBuilder til å generere routes.
-/// Antall faner, rekkefølge og innhold kan derfor ALDRI komme ut av
-/// synk, siden alt kommer fra denne ene listen.
+
 class AppNavDestination {
   final String path;
   final String label;
@@ -24,7 +17,7 @@ class AppNavDestination {
     required this.screenBuilder,
   });
 
-  static final List<AppNavDestination> appNavDestinations = [
+  static final List<AppNavDestination> mainBottomNavDestinations = [
     AppNavDestination(
       path: "/home",
       label: "packplans",
