@@ -1,8 +1,8 @@
 
 import 'package:flutter_supabase_pack/data/model/enum/gear_type_enum.dart';
 
-class Gear {
-  final String id;
+class GearDto {
+  final int id;
   final DateTime createdAt;
   final String brand;
   final String name;
@@ -10,7 +10,7 @@ class Gear {
   final int grams;
   final GearType type;
 
-  Gear({
+  GearDto({
     required this.id,
     required this.createdAt,
     required this.brand,
@@ -20,15 +20,18 @@ class Gear {
     required this.type,
   });
 
-  factory Gear.fromJson(Map<String, dynamic> json) {
-    return Gear(
+  factory GearDto.fromJson(Map<String, dynamic> json) {
+    return GearDto(
       id: json['id'],
       createdAt: DateTime.parse(json['created_at']),
       brand: json['brand'],
       name: json['name'],
       description: json['description'],
       grams: json['grams'],
-      type: GearType.values.firstWhere((e) => e.toString() == 'GearType.${json['type']}'),
+      type: GearType.values.firstWhere(
+        (e) => e.name == json['type'],
+        orElse: () => GearType.other,
+      ),
     );
   }
 
