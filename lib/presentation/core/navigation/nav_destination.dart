@@ -17,18 +17,18 @@ class AppNavDestination {
     required this.screenBuilder,
   });
 
-  static final List<AppNavDestination> mainBottomNavDestinations = [
+  static final List<AppNavDestination> appNavDestinations = [
+    AppNavDestination(
+      path: "/home",
+      label: "packplans",
+      icon: Icons.home,
+      screenBuilder: (context) => const PackPlan(),
+    ),
     AppNavDestination(
       path: "/gear",
       label: "gear",
       icon: Icons.backpack_rounded,
       screenBuilder: (context) => const GearScreen(),
-    ),
-    AppNavDestination(
-      path: "/packplans",
-      label: "packplans",
-      icon: Icons.stay_primary_landscape,
-      screenBuilder: (context) => const PackPlan(),
     ),
     AppNavDestination(
       path: "/my-trips",
