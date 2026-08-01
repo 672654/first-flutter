@@ -1,18 +1,106 @@
 # flutter_supabase_pack
 
-A new Flutter project.
+## Prosjektbeskrivelse
 
-## Getting Started
+`flutter_supabase_pack` er en Flutter-app for å planlegge og holde oversikt over
+pakkelister (f.eks. til fjellturer/friluftsliv). Brukeren kan opprette pakkeplaner
+(`packList`), knytte utstyr (`gear`) til hver plan via en kobling
+(`pakningsplan_utstyr`), og se total vekt for utstyret i hver plan. All data
+lagres i [Supabase](https://supabase.com/) (Postgres + PostgREST).
 
-This project is a starting point for a Flutter application.
+## Sentrale avhengigheter
 
-A few resources to get you started if this is your first Flutter project:
+| Pakke | Formål |
+|---|---|
+| [`supabase_flutter`](https://pub.dev/packages/supabase_flutter) | Klient for autentisering og CRUD mot Supabase/Postgres-backend |
+| [`cupertino_icons`](https://pub.dev/packages/cupertino_icons) | iOS-stil ikoner |
+| [`flutter_lints`](https://pub.dev/packages/flutter_lints) (dev) | Anbefalte lint-regler for konsistent kodekvalitet |
+| [`flutter_test`](https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html) (dev) | Rammeverk for widget-/enhetstester |
+
+## Arkitekturvalg
+
+Prosjektet følger et lagdelt arkitekturmønster inspirert av
+[Flutter sin offisielle arkitekturanbefaling](https://docs.flutter.dev/app-architecture)
+og MVVM-prinsipper:
+
+- **Separasjon av UI, forretningslogikk og data.** UI (widgets) skal aldri
+  snakke direkte med Supabase — all databasekommunikasjon går via et eget
+  data-lag, slik at logikken kan testes og gjenbrukes uavhengig av UI.
+- **Repository-pattern med interfaces.** Repositories eksponeres som abstrakte
+  klasser (interfaces), slik at datakilden (Supabase i dag) kan byttes ut
+  eller mockes i tester uten at resten av appen (view models/UI) må endres.
+  Dette følger *Dependency Inversion*-prinsippet fra SOLID.
+- **Eget domenelag.** `domain/models` inneholder rene forretningsmodeller,
+  uavhengig av hvordan data hentes eller lagres. Dette gjør at endringer i
+  databasestrukturen (f.eks. Supabase-kolonner) kun påvirker mapping-koden i
+  data-laget, ikke UI eller forretningslogikk.
+- **Feature-basert UI-struktur.** UI er organisert per feature
+  (`gear_view`, `packplans_view`) i stedet for per widget-type, slik at alt
+  som hører til én skjerm/flyt er samlet på ett sted og enkelt å finne.
+
+## Mappestruktur og ansvar
+
+```
+lib/
+  data/
+    model/          -> DTO-er (Data Transfer Objects)
+    services/        -> Rå kommunikasjon med Supabase
+    repositories/     -> Forretningslogikk for CRUD + mapping til domain-modeller
+  domain/
+    models/           -> Rene domenemodeller
+  presentation/
+    core/             -> Delte/gjenbrukbare widgets og temaer på tvers av features
+    features/         -> Én mappe per feature (skjerm/flyt)
+      gear_view/
+      packplans_view/
+```
+
+### `data/model/`
+Inneholder DTO-klasser som speiler den rå JSON-strukturen Supabase returnerer
+(f.eks. samme feltnavn og typer som i databasen). Har `fromJson()`/`toJson()`
+for (de)serialisering. **Hvorfor:** holder database-/API-spesifikke detaljer
+isolert, slik at resten av appen ikke trenger å bry seg om hvordan data ser ut
+"på ledningen".
+
+### `data/services/`
+Inneholder klasser som gjør de faktiske Supabase-kallene (select/insert/update/
+delete) og returnerer DTO-er. Ingen forretningslogikk her — kun teknisk
+kommunikasjon med backend. **Hvorfor:** skiller *hvordan* data hentes fra
+*hva* appen trenger den til, og gjør det enkelt å bytte backend (f.eks. til
+REST/Firebase) ved kun å skrive en ny service med samme metodesignaturer.
+
+### `data/repositories/`
+Definerer repository-interfacer (abstrakte klasser) og konkrete
+implementasjoner som bruker en eller flere services til å hente data, mapper
+DTO-er til domenemodeller, og kan legge til logikk som caching, feilhåndtering
+eller kombinering av flere datakilder. **Hvorfor:** view models/Cubits
+avhenger kun av interfacet, ikke den konkrete Supabase-implementasjonen — dette
+gjør koden testbar (mock av repository) og gjør det trivielt å bytte datakilde
+senere uten å endre UI eller logikk.
+
+### `domain/models/`
+Rene, plattform- og databaseuavhengige forretningsmodeller (f.eks. `Gear`,
+`PackPlan`). Kan inneholde beregnede egenskaper og forretningsregler (f.eks.
+total vekt for en pakkeplan). **Hvorfor:** gir et stabilt lag som resten av
+appen (view models og UI) kan stole på, uavhengig av endringer i
+databasestruktur eller ekstern API-respons.
+
+### `presentation/core/`
+Delte, gjenbrukbare UI-komponenter og temaer som brukes på tvers av flere
+features (f.eks. felles knapper, farger, tekststiler). **Hvorfor:** unngår
+duplisering av UI-kode og sikrer konsistent utseende i hele appen.
+
+### `presentation/features/<feature_name>/`
+Én mappe per feature/skjerm (f.eks. `packplans_view`, `gear_view`), som samler
+alt UI-relatert for den funksjonaliteten — skjermer, widgets og (etter hvert)
+tilhørende view models/Cubits. **Hvorfor:** gjør det enkelt å finne, endre og
+eventuelt fjerne en hel feature uten å lete gjennom flere spredte mapper.
+
+## Kom i gang
+
+Se [Flutter sin offisielle dokumentasjon](https://docs.flutter.dev/) for
+generell oppsett av utviklingsmiljø:
 
 - [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
 - [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
 - [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# first-flutter
