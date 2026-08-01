@@ -1,4 +1,4 @@
-import 'package:flutter_supabase_pack/presentation/core/navigation/nav_destination.dart';
+import 'package:flutter_supabase_pack/presentation/core/navigation/nav_bar_destinations.dart';
 import 'package:flutter_supabase_pack/presentation/core/widgets/bottom_nav.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,12 +9,14 @@ import 'package:go_router/go_router.dart';
 /// AppNavDestination.appNavDestinations. Legger du til en ny fane i
 /// den listen, dukker den automatisk opp her også, i riktig rekkefølge.
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppNavDestination.appNavDestinations.first.path,
+  initialLocation: AppNavDestination.mainBottomNavDestinations.first.path,
   routes: [
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) =>
-          BottomNav(navigationShell: navigationShell),
-      branches: AppNavDestination.appNavDestinations.map((destination) {
+      builder: (context, state, navigationShell) => BottomNav(
+        navigationShell: navigationShell,
+        destinations: AppNavDestination.mainBottomNavDestinations,
+      ),
+      branches: AppNavDestination.mainBottomNavDestinations.map((destination) {
         return StatefulShellBranch(
           routes: [
             GoRoute(

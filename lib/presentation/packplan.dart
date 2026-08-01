@@ -62,7 +62,7 @@ class _PackPlanState extends State<PackPlan> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pack Plans'),
+        title: const SelectableText('Pack Plans'),
       ),
       body: _packPlans == null
           ? const Center(child: CircularProgressIndicator())
