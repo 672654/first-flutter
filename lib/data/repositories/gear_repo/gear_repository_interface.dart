@@ -1,9 +1,12 @@
-import 'package:flutter_supabase_pack/data/model/gear_dto.dart';
+import 'package:flutter_supabase_pack/domain/models/gear.dart';
 
+/// Kontrakten Cubit/ViewModel avhenger av. Merk: eksponerer KUN
+/// domain-modellen Gear, aldri GearDto - resten av appen skal ikke
+/// vite at Supabase/DTO-representasjonen finnes i det hele tatt.
 abstract class GearRepository {
   Future<List<Gear>> getAllGear();
-  Future<Gear?> getGearById(String id);
+  Future<Gear?> getGearById(int id);
   Future<void> addGear(Gear gear);
   Future<void> updateGear(Gear gear);
-  Future<void> deleteGear(String id);
+  Future<void> deleteGear(int id);
 }
