@@ -34,27 +34,44 @@ class _GearView extends StatelessWidget {
           if (state is GearLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is GearLoaded) {
+
+            final categories = state.gearByType.keys.toList();
+
             return ListView.builder(
-              itemCount: state.gearList.length,
-              itemBuilder: (context, index) {
-                final gear = state.gearList[index];
+              itemCount: categories.length,
+              itemBuilder: (context, catIndex) {
+                final currentType = categories[catIndex];
+                final currentGearList = state.gearByType[currentType] ?? [];
+
+                //Nivå 1: Hovedkategori
                 return ExpansionTile(
                   title: Text(
-                    gear.name, 
+                    currentType,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  subtitle: Text(gear.brand),
-                  trailing: Text('${gear.grams} g'),
-                  children: [
-                    ListTile(
-                      contentPadding: const EdgeInsets.only(left: 32, right: 16, top: 4, bottom: 4),
-                      title: Text('Type: ${gear.description}'),
-                      subtitle: Text(gear.type.name),
-                    ),
-                  ],
+                  childrenPadding: const EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 4),
+                  children: currentGearList.map((gear) {
+                    //Nivå 2: Gear
+                    return ExpansionTile(
+                      title: Text(
+                        gear.name,
+                        ),
+                      subtitle: Text(gear.brand),
+                      trailing: Text('${gear.grams} g'),
+                      children: [
+
+                        //Nivå 3: Detaljer
+                        ListTile(
+                          contentPadding: const EdgeInsets.only(left: 32, right: 16, top: 4, bottom: 4),
+                          title: Text('Type: ${gear.description}'),
+                          subtitle: Text(gear.type.name),
+                        ),
+                      ],
+                    );
+                  }).toList(),
                 );
               },
             );
