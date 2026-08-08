@@ -2,8 +2,8 @@
 import 'package:flutter_supabase_pack/data/model/enum/gear_type_enum.dart';
 
 class GearDto {
-  final int id;
-  final DateTime createdAt;
+  final int? id;
+  final DateTime? createdAt;
   final String brand;
   final String name;
   final String description;
@@ -37,8 +37,6 @@ class GearDto {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'created_at': createdAt.toIso8601String(),
       'brand': brand,
       'name': name,
       'description': description,

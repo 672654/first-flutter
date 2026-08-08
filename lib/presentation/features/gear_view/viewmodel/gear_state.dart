@@ -42,3 +42,10 @@ class GearError extends GearState {
   @override
   List<Object?> get props => [message];
 }
+class GearAdding extends GearState {
+  const GearAdding();
+}
+class GearAdded extends GearState {
+  const GearAdded();
+}
+

@@ -5,6 +5,7 @@ import 'package:flutter_supabase_pack/core/service_locator.dart';
 import 'package:flutter_supabase_pack/data/repositories/gear_repo/gear_repository_interface.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/gear_cubit.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/gear_state.dart';
+import 'package:flutter_supabase_pack/presentation/features/gear_view/widgets/add_gear.dart';
 
 class GearScreen extends StatelessWidget {
   const GearScreen({super.key});
@@ -14,7 +15,7 @@ class GearScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => GearCubit(sl<GearRepository>())..loadAllGear(),
+      create: (context) => GearCubit(sl<GearRepository>())..startListeningToGearStream(),
       child: const _GearView(),
     );
   }
@@ -80,6 +81,24 @@ class _GearView extends StatelessWidget {
           }
           return const SizedBox();
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+
+          final gearCubit = context.read<GearCubit>();
+          // Show a dialog or a new screen to add gear
+          showModalBottomSheet(
+            context: context, 
+            isScrollControlled: true,
+            builder: (modalContext) {
+              return BlocProvider.value(
+                value: gearCubit,
+                child: AddGearModal(),
+              );
+            }
+          );
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

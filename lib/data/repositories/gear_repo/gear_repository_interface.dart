@@ -5,6 +5,7 @@ import 'package:flutter_supabase_pack/domain/models/gear.dart';
 /// vite at Supabase/DTO-representasjonen finnes i det hele tatt.
 abstract class GearRepository {
   Future<List<Gear>> getAllGear();
+  Stream<List<Gear>> streamAllGear();
   Future<Gear?> getGearById(int id);
   Future<void> addGear(Gear gear);
   Future<void> updateGear(Gear gear);

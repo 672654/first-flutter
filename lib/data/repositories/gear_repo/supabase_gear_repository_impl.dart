@@ -30,6 +30,18 @@ class SupabaseGearRepositoryImpl implements GearRepository{
   }
 
   @override
+  Stream<List<Gear>> streamAllGear() {
+    return _supabaseService.getAllGearStream().map((gearList) {
+      return gearList
+          .map((gearData) => GearDto.fromJson(gearData).toDomain())
+          .toList();
+    }).handleError((error, stackTrace) {
+      // Håndterer feil som oppstår i streamen
+      throw Exception('Error occurred while streaming gear: $error');
+    });
+  }
+
+  @override
   Future<Gear?> getGearById(int id) async {
     // TODO: implementer getGearById - hent enkelt gear-rad fra Supabase og map til Gear.
     throw UnimplementedError('not implemented yet');
@@ -37,7 +49,16 @@ class SupabaseGearRepositoryImpl implements GearRepository{
 
   @override
   Future<void> addGear(Gear gear) async {
-    throw UnimplementedError('not implemented yet');
+    
+    try{
+      final gearDto = gear.toDto();
+      await _supabaseService.addGear(gearDto.toJson());
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to add gear to db: $e');
+    } on Exception catch (a) {
+      throw Exception('Unexpected error occurred while adding gear: $a');
+    }
+
   }
 
   @override
