@@ -4,8 +4,8 @@ import 'package:flutter_supabase_pack/data/model/enum/gear_type_enum.dart';
 /// kjennskap til Supabase eller databasekolonner. Dette er typen
 /// ViewModel/Cubit og UI skal forholde seg til, ikke GearDto.
 class Gear {
-  final int id;
-  final DateTime createdAt;
+  final int? id;
+  final DateTime? createdAt;
   final String brand;
   final String name;
   final String description;
