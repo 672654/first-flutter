@@ -14,6 +14,7 @@ class AddGearModal extends StatefulWidget {
 class _AddGearModalState extends State<AddGearModal> {
   String name = '';
   String brand = '';
+  String description = '';
   GearType selectedType = GearType.other; // Standardverdi for type
   int grams = 0;
 
@@ -25,7 +26,7 @@ class _AddGearModalState extends State<AddGearModal> {
         top: 20,
         left: 20,
         right: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -45,6 +46,11 @@ class _AddGearModalState extends State<AddGearModal> {
             onChanged: (val) => brand = val,
           ),
 
+          TextField(
+            decoration: const InputDecoration(labelText: 'Beskrivelse'),
+            onChanged: (val) => description = val,
+          ),
+
           DropdownButtonFormField<GearType>(
             initialValue: selectedType,
             decoration: const InputDecoration(labelText: 'Kategori / Type'),
@@ -52,7 +58,7 @@ class _AddGearModalState extends State<AddGearModal> {
             items: GearType.values.map((GearType type) {
               return DropdownMenuItem<GearType>(
                 value: type,
-                child: Text(type.name), // Viser f.eks. "backpack" eller "tent" som tekst
+                child: Text(type.name[0].toUpperCase() + type.name.substring(1)), 
               );
             }).toList(),
             onChanged: (GearType? newValue) {
