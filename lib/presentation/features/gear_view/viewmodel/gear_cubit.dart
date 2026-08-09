@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_supabase_pack/data/repositories/gear_repo/gear_repository_interface.dart';
 import 'package:flutter_supabase_pack/domain/models/gear.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/gear_state.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class GearCubit extends Cubit<GearState> {
   final GearRepository _repo;
@@ -30,6 +31,10 @@ class GearCubit extends Cubit<GearState> {
       emit(GearLoaded(gearByType));
     }, onError: (error) {
       // Håndterer feil som oppstår i streamen
+      if (error is RealtimeSubscribeException) {
+        _gearStreamSubscription?.cancel();
+        startListeningToGearStream();
+      }
       emit(GearError(error.toString()));
     });
   }
