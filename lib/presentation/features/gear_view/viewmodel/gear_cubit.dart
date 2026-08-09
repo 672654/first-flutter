@@ -30,12 +30,11 @@ class GearCubit extends Cubit<GearState> {
       }
       emit(GearLoaded(gearByType));
     }, onError: (error) {
-      // Håndterer feil som oppstår i streamen
-      if (error is RealtimeSubscribeException) {
-        _gearStreamSubscription?.cancel();
-        startListeningToGearStream();
+      // Håndterer feil som oppstår i streamen, start den på nytt. mulig kjent feil fra supabase.
+      if (error is! RealtimeSubscribeException) {
+        emit(GearError(error.toString()));
       }
-      emit(GearError(error.toString()));
+      
     });
   }
 
