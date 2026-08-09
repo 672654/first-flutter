@@ -67,8 +67,7 @@ class _GearView extends StatelessWidget {
                         //Nivå 3: Detaljer
                         ListTile(
                           contentPadding: const EdgeInsets.only(left: 32, right: 16, top: 4, bottom: 4),
-                          title: Text('Type: ${gear.description}'),
-                          subtitle: Text(gear.type.name),
+                          title: Text(gear.description),
                         ),
                       ],
                     );
