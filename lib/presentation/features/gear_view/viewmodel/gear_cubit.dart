@@ -1,18 +1,21 @@
 
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_supabase_pack/data/repositories/gear_repo/gear_repository_interface.dart';
 import 'package:flutter_supabase_pack/domain/models/gear.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/gear_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class GearCubit extends Cubit<GearState> {
+class GearCubit extends Cubit<GearState> with WidgetsBindingObserver {
   final GearRepository _repo;
 
   StreamSubscription<List<Gear>>? _gearStreamSubscription;
 
-  GearCubit(this._repo) : super(const GearInitial());
+  GearCubit(this._repo) : super(const GearInitial()){
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   void startListeningToGearStream() {
     //start loading
@@ -36,6 +39,20 @@ class GearCubit extends Cubit<GearState> {
       }
       
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.hidden) {
+      // Appen går i bakgrunnen, kanseller streamen
+      _gearStreamSubscription?.cancel();
+      _gearStreamSubscription = null;
+    } else if (state == AppLifecycleState.resumed) {
+      // Appen kommer tilbake til forgrunnen, start streamen på nytt
+      if (!isClosed) {
+        startListeningToGearStream();
+      }
+    }
   }
 
   Future<void> loadAllGear() async {
@@ -70,6 +87,7 @@ class GearCubit extends Cubit<GearState> {
 
   @override
   Future<void> close() {
+    WidgetsBinding.instance.removeObserver(this);
     _gearStreamSubscription?.cancel();
     return super.close();
   }
