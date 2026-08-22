@@ -1,6 +1,6 @@
-import 'package:flutter_supabase_pack/presentation/core/navigation/bottom_nav.dart';
+import 'package:flutter_supabase_pack/presentation/core/navigation_bar_widget/bottom_nav.dart';
+import 'package:flutter_supabase_pack/presentation/core/navigation_bar_widget/bottom_navbar_destinations.dart';
 import 'package:flutter_supabase_pack/routing/app_routes/all_app_routes.dart';
-import 'package:flutter_supabase_pack/routing/app_routes/bottom_navbar_destinations.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter appRouterOne = GoRouter(
@@ -27,7 +27,7 @@ final GoRouter appRouterOne = GoRouter(
         );
       },
       //legg inn alle ruter i appen her. Disse finnes i /routing/app_routes/all_app_routes.dart
-      branches: [homeBranch, gearBranch, packplanBranch, myTripsBranch],
+      branches: [homeBranch, gearBranch2, packplanBranch, myTripsBranch],
     ),
   ],
 );

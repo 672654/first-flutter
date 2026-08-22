@@ -23,4 +23,16 @@ class SupabaseService {
 
     return response;
   }
+
+  Future<void> updateGear(int id, Map<String, dynamic> gearData) async {
+    final response = await _client.from('gear').update(gearData).eq('id', id);
+
+    return response;
+  }
+
+  Future<void> deleteGear(int id) async {
+    final response = await _client.from('gear').delete().eq('id', id);
+    return response;
+  }
+
 }

@@ -18,7 +18,7 @@ class GearCubit extends Cubit<GearState> with WidgetsBindingObserver {
   }
 
   void startListeningToGearStream() {
-    //start loading
+    //show loadingscreen
     emit(const GearLoading());
 
     //Kanseller gammel subscription før ny

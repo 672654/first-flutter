@@ -1,5 +1,6 @@
 
 import 'package:flutter_supabase_pack/presentation/features/gear_view/widgets/gear_screen.dart';
+import 'package:flutter_supabase_pack/presentation/features/gear_view/widgets/gear_screen_2.dart';
 import 'package:flutter_supabase_pack/presentation/features/home_view/widgets/home_screen.dart';
 import 'package:flutter_supabase_pack/presentation/features/packplans_view/widgets/packplan.dart';
 import 'package:flutter_supabase_pack/presentation/features/trips_view/my_trips_screen.dart';
@@ -10,6 +11,7 @@ class Destinations{
 
   static const String home = '/';
   static const String gear = '/gear';
+  static const String gear2 = '/gear2';
   static const String packplan = '/packplan';
   static const String myTrips = '/my-trips';
   static const String settings = '/settings';
@@ -31,6 +33,15 @@ final gearBranch = StatefulShellBranch(
     GoRoute(
       path: Destinations.gear,
       builder: (context, state) => const GearScreen(),
+    ),
+  ],
+);
+
+final gearBranch2 = StatefulShellBranch(
+  routes: [
+    GoRoute(
+      path: Destinations.gear2,
+      builder: (context, state) => const GearScreen2(),
     ),
   ],
 );
