@@ -8,17 +8,43 @@ import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/
 import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/gear_state_2.dart'; // Sørg for at filstien er rett
 
 class AddGearModal2 extends StatefulWidget {
-  const AddGearModal2({super.key});
+  final Gear? gearToEdit;
+  const AddGearModal2({super.key, this.gearToEdit});
 
   @override
   State<AddGearModal2> createState() => _AddGearModalState();
 }
 
 class _AddGearModalState extends State<AddGearModal2> {
-  String name = '';
-  String brand = '';
-  GearType selectedType = GearType.other; 
-  int grams = 0;
+
+
+  late final TextEditingController _nameController;
+  late final TextEditingController _brandController;
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _gramsController;
+  late GearType _selectedType;
+
+  bool get _isEditing => widget.gearToEdit != null;
+
+  @override
+  void initState() {
+    super.initState();
+    
+      _nameController = TextEditingController(text: widget.gearToEdit?.name ?? '');
+      _brandController = TextEditingController(text: widget.gearToEdit?.brand ?? '');
+      _descriptionController = TextEditingController(text: widget.gearToEdit?.description ?? '');
+      _selectedType = widget.gearToEdit?.type ?? GearType.other;
+      _gramsController = TextEditingController(text: widget.gearToEdit?.grams.toString() ?? '');
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _brandController.dispose();
+    _gramsController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,23 +59,24 @@ class _AddGearModalState extends State<AddGearModal2> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-            'Nytt utstyr',
+          Text(
+            _isEditing ? 'Rediger utstyr' : 'Nytt utstyr',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           TextField(
+            controller: _nameController,
             decoration: const InputDecoration(labelText: 'Navn'),
-            onChanged: (val) => name = val,
+           
           ),
           TextField(
+            controller: _brandController,
             decoration: const InputDecoration(labelText: 'Merke'),
-            onChanged: (val) => brand = val,
           ),
 
           DropdownButtonFormField<GearType>(
-            value: selectedType, // Rettet fra initialValue til value
-            decoration: const InputDecoration(labelText: 'Kategori / Type'),
+            value: _selectedType,
+            decoration: const InputDecoration(labelText: 'Kategori'),
             items: GearType.values.map((GearType type) {
               return DropdownMenuItem<GearType>(
                 value: type,
@@ -59,16 +86,17 @@ class _AddGearModalState extends State<AddGearModal2> {
             onChanged: (GearType? newValue) {
               if (newValue != null) {
                 setState(() {
-                  selectedType = newValue;
+                  _selectedType = newValue;
                 });
               }
             },
           ),
 
           TextField(
+            controller: _gramsController,
             decoration: const InputDecoration(labelText: 'Vekt (gram)'),
             keyboardType: TextInputType.number,
-            onChanged: (val) => grams = int.tryParse(val) ?? 0,
+            
           ),
           const SizedBox(height: 20),
           
@@ -82,20 +110,21 @@ class _AddGearModalState extends State<AddGearModal2> {
                   ? null // Deaktiverer knappen mens den lagrer i Supabase
                   : () {
                       final newGear = Gear(
-                        id: null,
-                        createdAt: null,
-                        name: name,
-                        brand: brand,
-                        grams: grams,
-                        description: '',
-                        type: selectedType,
+                        id: widget.gearToEdit?.id, // Hvis vi redigerer, behold id-en
+                        createdAt: widget.gearToEdit?.createdAt,
+                        name: _nameController.text,
+                        brand: _brandController.text,
+                        grams: int.tryParse(_gramsController.text) ?? 0,
+                        description: _descriptionController.text,
+                        type: _selectedType,
                       );
 
-                      // Kaller den nye GearCubit2
-                      context.read<GearCubit2>().addGear(newGear);
+                      if (_isEditing){
+                        context.read<GearCubit2>().updateGear(newGear);
+                      } else {
+                        context.read<GearCubit2>().addGear(newGear);
+                      }
                       
-                      // MERK: Navigator.pop(context) er fjernet herfra.
-                      // Den håndteres nå automatisk av BlocConsumer i GearScreen!
                     },
                 child: isAdding 
                   ? const SizedBox(
@@ -103,7 +132,7 @@ class _AddGearModalState extends State<AddGearModal2> {
                       width: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text('Lagre utstyr'),
+                  : const Text('Lagre'),
               );
             },
           ),

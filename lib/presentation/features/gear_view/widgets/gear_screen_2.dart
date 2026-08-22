@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_supabase_pack/core/service_locator.dart';
@@ -15,7 +13,8 @@ class GearScreen2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       // Sørg for at Cubit-navnet matcher det du landet på (GearCubit eller GearCubit2)
-      create: (context) => GearCubit2(sl<GearRepository>())..startListeningToGearStream(),
+      create: (context) =>
+          GearCubit2(sl<GearRepository>())..startListeningToGearStream(),
       child: const _GearView(),
     );
   }
@@ -27,9 +26,7 @@ class _GearView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const SelectableText('My Gear'),
-      ),
+      appBar: AppBar(title: const SelectableText('My Gear')),
       // Vi bruker BlocConsumer for å både lytte etter engangshendelser (feil/suksess) og bygge UI
       body: BlocConsumer<GearCubit2, GearStateSingle>(
         listener: (context, state) {
@@ -39,10 +36,12 @@ class _GearView extends StatelessWidget {
             );
           }
           if (state.status == GearStatus.added) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Utstyr lagt til!')),
-            );
-            Navigator.of(context).pop(); // Lukker bunnmenyen automatisk når det er lagt til
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Utstyr lagt til!')));
+            Navigator.of(
+              context,
+            ).pop(); // Lukker bunnmenyen automatisk når det er lagt til
           }
         },
         builder: (context, state) {
@@ -50,15 +49,19 @@ class _GearView extends StatelessWidget {
           if (state.status == GearStatus.loading && state.gearByType.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
-          
+
           // Hvis vi har en feil og ingen data i listen
           if (state.status == GearStatus.error && state.gearByType.isEmpty) {
-            return Center(child: Text('Kunne ikke laste utstyr: ${state.errorMessage}'));
+            return Center(
+              child: Text('Kunne ikke laste utstyr: ${state.errorMessage}'),
+            );
           }
 
           // Hvis listen er tom (uavhengig av status)
           if (state.gearByType.isEmpty) {
-            return const Center(child: Text('Ingen utstyr funnet. Legg til noe!'));
+            return const Center(
+              child: Text('Ingen utstyr funnet. Legg til noe!'),
+            );
           }
 
           final categories = state.gearByType.keys.toList();
@@ -78,7 +81,12 @@ class _GearView extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                childrenPadding: const EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 4),
+                childrenPadding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 4,
+                  bottom: 4,
+                ),
                 children: currentGearList.map((gear) {
                   // Nivå 2: Gear
                   return ExpansionTile(
@@ -88,10 +96,53 @@ class _GearView extends StatelessWidget {
                     children: [
                       // Nivå 3: Detaljer
                       ListTile(
-                        contentPadding: const EdgeInsets.only(left: 32, right: 16, top: 4, bottom: 4),
-                        title: Text(gear.description),
+                        contentPadding: const EdgeInsets.only(
+                          left: 32,
+                          right: 16,
+                          top: 4,
+                          bottom: 4,
+                        ),
+                        title: Text(
+                          gear.description.isNotEmpty
+                              ? gear.description[0].toUpperCase() +
+                                    gear.description.substring(1)
+                              : '',
+                        ),
                       ),
-                      
+                      ListTile(
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            FilledButton.tonal(
+                              onPressed: () {
+                                final gearCubit = context.read<GearCubit2>();
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (modalContext) {
+                                    return BlocProvider.value(
+                                      value: gearCubit,
+                                      child: AddGearModal2(
+                                        gearToEdit: gear,
+                                      ), // Sørg for at denne har const hvis mulig
+                                    );
+                                  },
+                                );
+                              },
+                              child: const Text('Edit'),
+                            ),
+                            const SizedBox(width: 8),
+                            
+                            FilledButton.tonal(
+                              onPressed: () {
+                                final gearCubit = context.read<GearCubit2>();
+                                gearCubit.deleteGear(gear.id ?? -1);
+                              },
+                              child: const Text('Delete'),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   );
                 }).toList(),
@@ -109,7 +160,8 @@ class _GearView extends StatelessWidget {
             builder: (modalContext) {
               return BlocProvider.value(
                 value: gearCubit,
-                child: const AddGearModal2(), // Sørg for at denne har const hvis mulig
+                child:
+                    const AddGearModal2(), // Sørg for at denne har const hvis mulig
               );
             },
           );

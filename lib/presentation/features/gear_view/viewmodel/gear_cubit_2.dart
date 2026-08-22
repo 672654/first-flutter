@@ -97,6 +97,32 @@ void startListeningToGearStream() {
     }
   }
 
+  Future<void> updateGear(Gear gearData) async {
+    emit(state.copyWith(status: GearStatus.adding));
+    try {
+      await _repo.updateGear(gearData);
+      emit(state.copyWith(status: GearStatus.added));
+    } catch (e) {
+      emit(state.copyWith(
+        status: GearStatus.error,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> deleteGear(int gearId) async {
+    emit(state.copyWith(status: GearStatus.deleting));
+    try {
+      await _repo.deleteGear(gearId);
+      emit(state.copyWith(status: GearStatus.deleted));
+    } catch (e) {
+      emit(state.copyWith(
+        status: GearStatus.error,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
   @override
   Future<void> close() {
     WidgetsBinding.instance.removeObserver(this);

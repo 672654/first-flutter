@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_supabase_pack/domain/models/gear.dart';
 
-enum GearStatus { initial, loading, loaded, adding, added, error }
+enum GearStatus { initial, loading, loaded, adding, editing, added, deleting, deleted, error }
 
 class GearStateSingle extends Equatable {
   final GearStatus status;
