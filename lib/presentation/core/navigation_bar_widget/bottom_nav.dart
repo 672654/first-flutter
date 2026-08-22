@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_supabase_pack/routing/app_routes/bottom_navbar_destinations.dart';
+import 'package:flutter_supabase_pack/presentation/core/navigation_bar_widget/bottom_navbar_destinations.dart';
 import 'package:go_router/go_router.dart';
 
 /// Ren, gjenbrukbar UI-komponent for et navigasjonsskall med bunnmeny.

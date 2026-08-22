@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_supabase_pack/presentation/features/gear_view/widgets/gear_screen.dart';
+import 'package:flutter_supabase_pack/presentation/features/gear_view/widgets/gear_screen_2.dart';
 import 'package:flutter_supabase_pack/presentation/features/home_view/widgets/home_screen.dart';
 import 'package:flutter_supabase_pack/presentation/features/packplans_view/widgets/packplan.dart';
 import 'package:flutter_supabase_pack/presentation/features/trips_view/my_trips_screen.dart';
@@ -26,10 +26,10 @@ class BottomNavRoutes{
       screenBuilder: (context) => const HomeScreen(),
     ),
     BottomNavRoutes(
-      path: Destinations.gear,
+      path: Destinations.gear2,
       label: "gear",
       icon: Icons.backpack_rounded,
-      screenBuilder: (context) => const GearScreen(),
+      screenBuilder: (context) => const GearScreen2(),
     ),
     BottomNavRoutes(
       path: Destinations.packplan,

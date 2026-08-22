@@ -68,7 +68,11 @@ class SupabaseGearRepositoryImpl implements GearRepository{
 
   @override
   Future<void> deleteGear(int id) async {
-    throw UnimplementedError('not implemented yet');
+    try{
+      await _supabaseService.deleteGear(id);
+    } catch (e) {
+      throw Exception('Failed to delete gear from db: $e');
+    }
   }
 
 }
