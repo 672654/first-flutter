@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_supabase_pack/core/service_locator.dart';
 import 'package:flutter_supabase_pack/data/repositories/gear_repo/gear_repository_interface.dart';
+import 'package:flutter_supabase_pack/presentation/core/widgets/crud_button.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/gear_cubit_2.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/gear_state_2.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/widgets/add_gear_2.dart';
@@ -108,13 +109,12 @@ class _GearView extends StatelessWidget {
                                     gear.description.substring(1)
                               : '',
                         ),
-                      ),
-                      ListTile(
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            FilledButton.tonal(
-                              onPressed: () {
+                            CrudButton(
+                              type: CrudType.update,
+                              action: () {
                                 final gearCubit = context.read<GearCubit2>();
                                 showModalBottomSheet(
                                   context: context,
@@ -129,16 +129,15 @@ class _GearView extends StatelessWidget {
                                   },
                                 );
                               },
-                              child: const Text('Edit'),
                             ),
                             const SizedBox(width: 8),
                             
-                            FilledButton.tonal(
-                              onPressed: () {
+                            CrudButton(
+                              type: CrudType.delete,
+                              action: () {
                                 final gearCubit = context.read<GearCubit2>();
                                 gearCubit.deleteGear(gear.id ?? -1);
                               },
-                              child: const Text('Delete'),
                             ),
                           ],
                         ),
