@@ -1,6 +1,9 @@
 import 'package:flutter_supabase_pack/data/repositories/gear_repo/gear_repository_interface.dart';
 import 'package:flutter_supabase_pack/data/repositories/gear_repo/supabase_gear_repository_impl.dart';
-import 'package:flutter_supabase_pack/data/services/supabase_service/supabase_service.dart';
+import 'package:flutter_supabase_pack/data/repositories/packlist_repo/packlist_repository_interface.dart';
+import 'package:flutter_supabase_pack/data/repositories/packlist_repo/supabase_packlist_repository_impl.dart';
+import 'package:flutter_supabase_pack/data/services/supabase_service/supabase_service_gear.dart';
+import 'package:flutter_supabase_pack/data/services/supabase_service/supabase_service_packplan.dart';
 import 'package:get_it/get_it.dart';
 
 /// Global service locator-instans. Brukes til å hente avhengigheter
@@ -14,11 +17,17 @@ final GetIt sl = GetIt.instance;
 /// (GearRepository).
 Future<void> setupServiceLocator() async {
   // Bunnen av kjeden - ingen egne avhengigheter.
-  sl.registerLazySingleton<SupabaseService>(() => SupabaseService());
+  sl.registerLazySingleton<SupabaseServiceGear>(() => SupabaseServiceGear());
+
+  sl.registerLazySingleton<SupabaseServicePackplan>(() => SupabaseServicePackplan());
 
   // Avhenger av SupabaseService, hentes FRA sl (ikke opprettet selv).
   sl.registerLazySingleton<GearRepository>(
-    () => SupabaseGearRepositoryImpl(sl<SupabaseService>()),
+    () => SupabaseGearRepositoryImpl(sl<SupabaseServiceGear>()),
+  );
+
+  sl.registerLazySingleton<PacklistRepositoryInterface>(
+    () => SupabasePacklistRepositoryImpl(sl<SupabaseServicePackplan>()),
   );
 
   // Cubits registreres IKKE her - de opprettes per skjerm-instans via
