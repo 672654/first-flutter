@@ -3,13 +3,13 @@
 import 'package:flutter_supabase_pack/data/model/gear/gear_dto.dart';
 import 'package:flutter_supabase_pack/data/model/gear/gear_mapper.dart';
 import 'package:flutter_supabase_pack/data/repositories/gear_repo/gear_repository_interface.dart';
-import 'package:flutter_supabase_pack/data/services/supabase_service/supabase_service.dart';
+import 'package:flutter_supabase_pack/data/services/supabase_service/supabase_service_gear.dart';
 import 'package:flutter_supabase_pack/domain/models/gear.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseGearRepositoryImpl implements GearRepository{
 
-  final SupabaseService _supabaseService;
+  final SupabaseServiceGear _supabaseService;
 
   SupabaseGearRepositoryImpl(this._supabaseService);
 
@@ -63,7 +63,14 @@ class SupabaseGearRepositoryImpl implements GearRepository{
 
   @override
   Future<void> updateGear(Gear gear) async {
-    throw UnimplementedError('not implemented yet');
+    try{
+      final gearDto = gear.toDto();
+      await _supabaseService.updateGear(gearDto.id!, gearDto.toJson());
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to update gear in db: $e');
+    } on Exception catch (a) {
+      throw Exception('Unexpected error occurred while updating gear: $a');
+    }
   }
 
   @override

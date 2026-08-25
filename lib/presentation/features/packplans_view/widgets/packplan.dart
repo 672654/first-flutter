@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_supabase_pack/data/repositories/packlist_repo/supabase_packlist_repository_impl.dart';
+import 'package:flutter_supabase_pack/data/services/supabase_service/supabase_service_packplan.dart';
+import 'package:flutter_supabase_pack/domain/models/packplan.dart';       // Importer din Packplan-modell
+import 'package:flutter_supabase_pack/domain/models/packplan_item.dart';  // Importer din PackplanItem-modell
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PackPlan extends StatefulWidget {
@@ -9,43 +13,38 @@ class PackPlan extends StatefulWidget {
 }
 
 class _PackPlanState extends State<PackPlan> {
-  List<dynamic>? _packPlans;
+  // Bruker den eksakte modellen din i stedet for dynamic
+  List<Packplan>? _packPlans;
   String totalGrams = "0";
 
   @override
   void initState() {
     super.initState();
-    readPackPlans();
+    getAllPackplans();
   }
 
-  void readPackPlans() async {
+  void getAllPackplans() async {
     try {
-      // Henter alle packlist-rader, sammen med koblingsraden
-      // pakningsplan_utstyr og det nøstede gear-objektet.
-      final response = await Supabase.instance.client
-          .from('packList')
-          .select('*, pakningsplan_utstyr(*, gear(*))');
+      final response = await SupabasePacklistRepositoryImpl(SupabaseServicePackplan()).getAllPackplans();
 
       setState(() {
-        _packPlans = response as List<dynamic>?;
+        _packPlans = response;
         totalGrams = calculateTotalGrams();
       });
     } catch (error) {
-      print('Error reading pack plans: $error');
+      print('Error fetching pack plans: $error');
     }
   }
 
   String calculateTotalGrams() {
     int total = 0;
     if (_packPlans != null) {
-      for (var packPlan in _packPlans!) {
-        final utsyrRows =
-            (packPlan['pakningsplan_utstyr'] as List<dynamic>?) ?? [];
-        for (var row in utsyrRows) {
-          final gear = row['gear'] as Map<String, dynamic>?;
-          if (gear != null && gear['grams'] != null) {
-            total += gear['grams'] as int;
-          }
+      for (Packplan packPlan in _packPlans!) {
+        final List<PackplanItem> items = packPlan.gearList ?? [];
+        for (PackplanItem item in items) {
+          final gear = item.gear;
+          // Ganger vekten med antallet (quantity) for nøyaktig totalvekt
+          total += (gear.grams) * item.quantity;
         }
       }
     }
@@ -69,24 +68,31 @@ class _PackPlanState extends State<PackPlan> {
           : ListView.builder(
               itemCount: _packPlans!.length,
               itemBuilder: (context, index) {
-                final packPlan = _packPlans![index];
+                final Packplan packPlan = _packPlans![index];
 
-                // Liste over koblingsrader (pakningsplan_utstyr) for denne packlisten
-                final utsyrRows =
-                    (packPlan['pakningsplan_utstyr'] as List<dynamic>?) ?? [];
+                final String planName = packPlan.name ?? 'Uten navn';
+                final List<PackplanItem> items = packPlan.gearList ?? [];
 
                 return ExpansionTile(
-                  title: Text(packPlan['name'] ?? ''),
+                  title: Text(planName),
                   subtitle: Text('Total: $totalGrams g'),
-                  children: utsyrRows.map((row) {
-                    final gear = row['gear'] as Map<String, dynamic>?;
-                    if (gear == null) {
-                      return const ListTile(title: Text('Ukjent utstyr'));
-                    }
+                  children: items.map((PackplanItem item) {
+                    final gear = item.gear;
+                    
+                    final String gearName = gear.name;
+                    final String gearDesc = gear.description;
+                    final int gearGrams = gear.grams;
+                    final int qty = item.quantity;
+
+                    // Viser antall hvis det er mer enn 1 (f.eks: "Sokker x2")
+                    final String displayName = qty > 1 ? '$gearName (x$qty)' : gearName;
+                    // Regner ut totalen for akkurat dette utstyret basert på antall
+                    final int itemTotalGrams = gearGrams * qty;
+
                     return ListTile(
-                      title: Text(gear['name'] ?? ''),
-                      subtitle: Text(gear['description'] ?? ''),
-                      trailing: Text('${gear['grams']} g'),
+                      title: Text(displayName),
+                      subtitle: Text(gearDesc),
+                      trailing: Text('$itemTotalGrams g'),
                     );
                   }).toList(),
                 );
