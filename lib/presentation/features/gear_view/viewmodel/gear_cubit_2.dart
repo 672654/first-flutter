@@ -39,12 +39,13 @@ void startListeningToGearStream() {
         errorMessage: null, // Nullstiller feilmelding ved suksess
       ));
     }, onError: (error) {
-      if (error is! RealtimeSubscribeException) {
-        emit(state.copyWith(
+      if (error is RealtimeSubscribeException) {
+        //Gjør ingen ting
+      }
+      emit(state.copyWith(
           status: GearStatus.error,
           errorMessage: error.toString(),
         ));
-      }
     });
   }
 

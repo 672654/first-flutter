@@ -24,9 +24,11 @@ class SupabaseGearRepositoryImpl implements GearRepository{
 
     } on PostgrestException catch (e) {
       throw Exception('Failed to load gear from db: $e');
+    } on RealtimeSubscribeException catch (b){
+      throw b;
     } on Exception catch (a) {
       throw Exception('Unexpected error occurred while loading gear: $a');
-    }
+    } 
   }
 
   @override
@@ -36,7 +38,9 @@ class SupabaseGearRepositoryImpl implements GearRepository{
           .map((gearData) => GearDto.fromJson(gearData).toDomain())
           .toList();
     }).handleError((error, stackTrace) {
-      // Håndterer feil som oppstår i streamen
+      if (error is RealtimeSubscribeException) {
+        throw error;
+      }
       throw Exception('Error occurred while streaming gear: $error');
     });
   }
