@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_supabase_pack/core/utils/extensions/string_extensions.dart';
 import 'package:flutter_supabase_pack/data/model/enum/gear_type_enum.dart';
 import 'package:flutter_supabase_pack/domain/models/gear.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/gear_cubit_2.dart';
@@ -80,7 +81,7 @@ class _AddGearModalState extends State<AddGearModal2> {
             items: GearType.values.map((GearType type) {
               return DropdownMenuItem<GearType>(
                 value: type,
-                child: Text(type.name),
+                child: Text(type.name.capitalize()),
               );
             }).toList(),
             onChanged: (GearType? newValue) {

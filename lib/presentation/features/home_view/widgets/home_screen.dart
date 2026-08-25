@@ -14,6 +14,10 @@ class HomeScreen extends StatelessWidget {
       body: const Center(
         child: Text('Welcome to the Home Screen!'),
       ),
+      bottomSheet: const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Text('v.1.0.0'),
+      ),
     );
   }
 }
