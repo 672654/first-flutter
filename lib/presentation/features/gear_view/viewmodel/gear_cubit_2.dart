@@ -39,8 +39,12 @@ void startListeningToGearStream() {
         errorMessage: null, // Nullstiller feilmelding ved suksess
       ));
     }, onError: (error) {
-      if (error is RealtimeSubscribeException) {
+      final errorString = error.toString().toLowerCase();
+      if (error is RealtimeSubscribeException ||
+          errorString.contains('websocket') ||
+          errorString.contains('channel')) {
         //Gjør ingen ting
+        return;
       }
       emit(state.copyWith(
           status: GearStatus.error,
