@@ -38,7 +38,10 @@ class SupabaseGearRepositoryImpl implements GearRepository{
           .map((gearData) => GearDto.fromJson(gearData).toDomain())
           .toList();
     }).handleError((error, stackTrace) {
-      if (error is RealtimeSubscribeException) {
+      final errorString = error.toString().toLowerCase();
+      if (error is RealtimeSubscribeException ||
+          errorString.contains('websocket') ||
+          errorString.contains('channel')) {
         throw error;
       }
       throw Exception('Error occurred while streaming gear: $error');
