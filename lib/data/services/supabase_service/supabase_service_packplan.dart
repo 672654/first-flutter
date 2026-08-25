@@ -10,8 +10,8 @@ class SupabaseServicePackplan {
 
   Future<List<Map<String, dynamic>>> getAllPackplans() async {
     final response = await _client
-      .from('packList')
-      .select('*, pakningsplan_utstyr(*, gear(*))');
+      .from('packplan')
+      .select('*, gear_packplan(quantity, gear(*))');
 
     return response;
   }
@@ -19,7 +19,7 @@ class SupabaseServicePackplan {
   Stream<List<Map<String, dynamic>>> getAllPackplanStream(){
     return _client
       .from('packList')
-      .select('*, pakningsplan_utstyr(*, gear(*))')
+      .select('*, gear_packplan(quantity, gear(*))')
       .asStream();
   }
 

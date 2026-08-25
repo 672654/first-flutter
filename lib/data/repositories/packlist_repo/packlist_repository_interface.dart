@@ -1,11 +1,11 @@
 
 
-import 'package:flutter_supabase_pack/domain/models/packlist.dart';
+import 'package:flutter_supabase_pack/domain/models/packplan.dart';
 
 abstract class PacklistRepositoryInterface {
-  Future<List<Packlist>> getAllPacklists();
-  Future<Packlist?> getPacklistById(int id);
-  Future<void> createPacklist(Packlist packlist);
-  Future<void> updatePacklist(Packlist packlist);
-  Future<void> deletePacklist(int id);
+  Future<List<Packplan>> getAllPackplans();
+  Future<Packplan?> getPackplanById(int id);
+  Future<void> createPackplan(Packplan packplan);
+  Future<void> updatePackplan(Packplan packplan);
+  Future<void> deletePackplan(int id);
 }

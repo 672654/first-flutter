@@ -1,14 +1,14 @@
 
-import 'package:flutter_supabase_pack/domain/models/gear.dart';
+import 'package:flutter_supabase_pack/domain/models/packplan_item.dart';
 
-class Packlist {
+class Packplan {
   final int? id;
   final DateTime? createdAt;
   final String? description;
   final String? name;
-  final List<Gear>? gearList;
+  final List<PackplanItem>? gearList;
 
-  Packlist({
+  Packplan({
     required this.id,
     required this.createdAt,
     required this.description,
