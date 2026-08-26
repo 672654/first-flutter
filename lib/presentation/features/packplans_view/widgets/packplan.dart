@@ -3,6 +3,8 @@ import 'package:flutter_supabase_pack/data/repositories/packlist_repo/supabase_p
 import 'package:flutter_supabase_pack/data/services/supabase_service/supabase_service_packplan.dart';
 import 'package:flutter_supabase_pack/domain/models/packplan.dart';       // Importer din Packplan-modell
 import 'package:flutter_supabase_pack/domain/models/packplan_item.dart';  // Importer din PackplanItem-modell
+import 'package:flutter_supabase_pack/routing/app_routes/all_app_routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PackPlan extends StatefulWidget {
@@ -98,11 +100,23 @@ class _PackPlanState extends State<PackPlan> {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          createPackPlan("New Pack Plan");
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              context.go(Destinations.crudPackplan);
+            },
+            child: const Icon(Icons.add_photo_alternate_outlined),
+          ),
+          const SizedBox(width: 16), // Add some space between the buttons
+          FloatingActionButton(
+            onPressed: () {
+              createPackPlan("New Pack Plan");
+            },
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }
