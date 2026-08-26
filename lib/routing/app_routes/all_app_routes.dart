@@ -2,6 +2,7 @@
 import 'package:flutter_supabase_pack/presentation/features/gear_view/widgets/gear_screen.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/widgets/gear_screen_2.dart';
 import 'package:flutter_supabase_pack/presentation/features/home_view/widgets/home_screen.dart';
+import 'package:flutter_supabase_pack/presentation/features/packplans_view/widgets/crud_packplan.dart';
 import 'package:flutter_supabase_pack/presentation/features/packplans_view/widgets/packplan.dart';
 import 'package:flutter_supabase_pack/presentation/features/trips_view/my_trips_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -10,12 +11,25 @@ class Destinations{
   Destinations._();
 
   static const String home = '/';
+
   static const String gear = '/gear';
   static const String gear2 = '/gear2';
+
   static const String packplan = '/packplan';
+  static const String crudPackplanSubPath = 'crud';
+  static const String crudPackplan = '/packplan/crud';
+
   static const String myTrips = '/my-trips';
+
   static const String settings = '/settings';
 }
+
+/* legg til vanlige routes her som dekker hele skjermen. eksempel: Da kan man bare skrive crudTwo i router.dart.
+final crudTwo = GoRoute(
+  path: Destinations.crudPackplanTwo,
+  builder: (context, state) => const CrudPackplan(),
+);
+*/
 
 final homeBranch = StatefulShellBranch(
   routes: [
@@ -51,6 +65,12 @@ final packplanBranch = StatefulShellBranch(
     GoRoute(
       path: Destinations.packplan,
       builder: (context, state) => const PackPlan(),
+      routes: [
+        GoRoute(
+          path: Destinations.crudPackplanSubPath,
+          builder: (context, state) => const CrudPackplan(),
+        ),
+      ],
     ),
   ],
 );

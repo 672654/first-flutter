@@ -29,6 +29,7 @@ final GoRouter appRouterOne = GoRouter(
       //legg inn alle ruter i appen her. Disse finnes i /routing/app_routes/all_app_routes.dart
       branches: [homeBranch, gearBranch2, packplanBranch, myTripsBranch],
     ),
+    // Legg til flere grener her utenfor statefulshellroute, altså normale route. 
   ],
 );
 
