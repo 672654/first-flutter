@@ -1,14 +1,14 @@
 
 enum GearType {
+  pack,
   shelter,
-  cooking,
-  clothing,
   sleeping,
+  cooking,
+  nutrition,
+  clothing,
   tech,
   packraft,
-  pack,
   hunting,
   fishing,
-  nutrition,
   other,
 }

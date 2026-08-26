@@ -4,6 +4,8 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_supabase_pack/core/utils/extensions/string_extensions.dart';
+import 'package:flutter_supabase_pack/data/model/enum/gear_type_enum.dart';
 import 'package:flutter_supabase_pack/data/repositories/gear_repo/gear_repository_interface.dart';
 import 'package:flutter_supabase_pack/domain/models/gear.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/gear_state_2.dart';
@@ -27,12 +29,16 @@ void startListeningToGearStream() {
     _gearStreamSubscription?.cancel();
 
     _gearStreamSubscription = _repo.streamAllGear().listen((gearList) {
-      final Map<String, List<Gear>> gearByType = {};
+      final Map<String, List<Gear>> gearByType = {
+        for (final type in GearType.values) type.name.capitalize(): []
+      };
       
       for (final gear in gearList) {
-        final upperCaseFirstLetter = gear.type.name[0].toUpperCase() + gear.type.name.substring(1);
-        gearByType.putIfAbsent(upperCaseFirstLetter, () => []).add(gear);
+        final type = gear.type ?? GearType.other;
+        final upperCaseFirstLetter = type.name.capitalize();
+        gearByType[upperCaseFirstLetter]?.add(gear);
       }
+      
       emit(state.copyWith(
         status: GearStatus.loaded,
         gearByType: gearByType,
