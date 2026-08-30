@@ -9,7 +9,7 @@ import 'package:flutter_supabase_pack/presentation/features/gear_view/viewmodel/
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class GearCubit extends Cubit<GearState> with WidgetsBindingObserver {
-  final GearRepository _repo;
+  final GearRepositoryInterface _repo;
 
   StreamSubscription<List<Gear>>? _gearStreamSubscription;
 

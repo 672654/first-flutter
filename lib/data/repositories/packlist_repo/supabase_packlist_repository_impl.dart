@@ -29,6 +29,18 @@ class SupabasePacklistRepositoryImpl implements PacklistRepositoryInterface {
   }
 
   @override
+  Stream<List<Packplan>> streamAllPackplans() {
+    return _supabaseService.getAllPackplanStream().map((data) {
+      final dtos = data.map((item) => PackplanDto.fromJson(item)).toList();
+      return dtos.map((dto) => dto.toDomain()).toList();
+    }).handleError((error) {
+      // Handle error
+      final errorString = error.toString().toLowerCase();
+      throw Exception('Error occurred while streaming packplans: $errorString');
+    });
+  }
+
+  @override
   Future<Packplan?> getPackplanById(int id) {
     // TODO: implement getPackplanById
     throw UnimplementedError();

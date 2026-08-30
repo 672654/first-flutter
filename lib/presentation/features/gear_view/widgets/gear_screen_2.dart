@@ -15,7 +15,7 @@ class GearScreen2 extends StatelessWidget {
     return BlocProvider(
       // Sørg for at Cubit-navnet matcher det du landet på (GearCubit eller GearCubit2)
       create: (context) =>
-          GearCubit2(sl<GearRepository>())..startListeningToGearStream(),
+          GearCubit2(sl<GearRepositoryInterface>())..startListeningToGearStream(),
       child: const _GearView(),
     );
   }

@@ -7,7 +7,7 @@ import 'package:flutter_supabase_pack/data/services/supabase_service/supabase_se
 import 'package:flutter_supabase_pack/domain/models/gear.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SupabaseGearRepositoryImpl implements GearRepository{
+class SupabaseGearRepositoryImpl implements GearRepositoryInterface{
 
   final SupabaseServiceGear _supabaseService;
 

@@ -18,7 +18,7 @@ class SupabaseServicePackplan {
 
   Stream<List<Map<String, dynamic>>> getAllPackplanStream(){
     return _client
-      .from('packList')
+      .from('packplan')
       .select('*, gear_packplan(quantity, gear(*))')
       .asStream();
   }

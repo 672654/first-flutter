@@ -13,7 +13,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class GearCubit2 extends Cubit<GearStateSingle> with WidgetsBindingObserver {
 
-  final GearRepository _repo;
+  final GearRepositoryInterface _repo;
   StreamSubscription<List<Gear>>? _gearStreamSubscription;
 
   GearCubit2(this._repo) : super(const GearStateSingle()) {

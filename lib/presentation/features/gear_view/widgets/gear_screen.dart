@@ -15,7 +15,7 @@ class GearScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => GearCubit(sl<GearRepository>())..startListeningToGearStream(),
+      create: (context) => GearCubit(sl<GearRepositoryInterface>())..startListeningToGearStream(),
       child: const _GearView(),
     );
   }

@@ -22,7 +22,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<SupabaseServicePackplan>(() => SupabaseServicePackplan());
 
   // Avhenger av SupabaseService, hentes FRA sl (ikke opprettet selv).
-  sl.registerLazySingleton<GearRepository>(
+  sl.registerLazySingleton<GearRepositoryInterface>(
     () => SupabaseGearRepositoryImpl(sl<SupabaseServiceGear>()),
   );
 
