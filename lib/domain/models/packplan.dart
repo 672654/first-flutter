@@ -15,4 +15,9 @@ class Packplan {
     required this.name,
     required this.gearList,
   });
+
+  double get totalWeight {
+    if (gearList == null) return 0.0;
+    return gearList!.fold(0.0, (sum, item) => sum + (item.gear.grams ?? 0.0));
+  }
 }

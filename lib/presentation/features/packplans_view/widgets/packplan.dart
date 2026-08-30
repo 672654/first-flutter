@@ -5,7 +5,6 @@ import 'package:flutter_supabase_pack/domain/models/packplan.dart';       // Imp
 import 'package:flutter_supabase_pack/domain/models/packplan_item.dart';  // Importer din PackplanItem-modell
 import 'package:flutter_supabase_pack/routing/app_routes/all_app_routes.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PackPlan extends StatefulWidget {
   const PackPlan({super.key});
@@ -53,11 +52,6 @@ class _PackPlanState extends State<PackPlan> {
     return total.toString();
   }
 
-  void createPackPlan(String name) async {
-    await Supabase.instance.client
-        .from('packList')
-        .insert({'name': name});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,13 +102,6 @@ class _PackPlanState extends State<PackPlan> {
               context.go(Destinations.crudPackplan);
             },
             child: const Icon(Icons.add_photo_alternate_outlined),
-          ),
-          const SizedBox(width: 16), // Add some space between the buttons
-          FloatingActionButton(
-            onPressed: () {
-              createPackPlan("New Pack Plan");
-            },
-            child: const Icon(Icons.add),
           ),
         ],
       ),
