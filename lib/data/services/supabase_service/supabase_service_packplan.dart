@@ -23,6 +23,16 @@ class SupabaseServicePackplan {
       .asStream();
   }
 
+  Future<Map<String, dynamic>?> getPackPlanById(int id) async {
+    final response = await _client
+      .from('packplan')
+      .select('*, gear_packplan(quantity, gear(*))')
+      .eq('id', id)
+      .single();
+
+    return response;
+  }
+
   Future<void> addPackplan(Map<String, dynamic> packplanData) async {
     final response = await _client.from('packList').insert(packplanData);
 

@@ -1,12 +1,8 @@
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_supabase_pack/core/service_locator.dart';
-import 'package:flutter_supabase_pack/data/repositories/packlist_repo/packlist_repository_interface.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/widgets/gear_screen.dart';
 import 'package:flutter_supabase_pack/presentation/features/gear_view/widgets/gear_screen_2.dart';
 import 'package:flutter_supabase_pack/presentation/features/home_view/widgets/home_screen.dart';
-import 'package:flutter_supabase_pack/presentation/features/packplans_view/viewmodel/packplans_cubit.dart';
-import 'package:flutter_supabase_pack/presentation/features/packplans_view/widgets/crud_packplan.dart';
+import 'package:flutter_supabase_pack/presentation/features/packplans_view/packplan_view/crud_packplan.dart';
 import 'package:flutter_supabase_pack/presentation/features/packplans_view/widgets/packplans.dart';
 import 'package:flutter_supabase_pack/presentation/features/trips_view/my_trips_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -70,20 +66,13 @@ final packplanBranch = StatefulShellBranch(
     GoRoute(
       path: Destinations.packplans,
       builder: (context, state) {
-        return BlocProvider(
-          create: (context) => PackplansCubit(sl<PacklistRepositoryInterface>())..startListeningToPackplansStream(),
-          child: const Packplans(),
-        );
+        return const Packplans();
       },
       routes: [
         GoRoute(
           path: Destinations.crudPackplanSubPath,
           builder: (context, state) {
-            final packplanCubit = state.extra as PackplansCubit;
-            return BlocProvider.value(
-              value: packplanCubit,
-              child: const CrudPackplan(),
-            );
+            return const CrudPackplan();
           },
         ),
       ],

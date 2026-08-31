@@ -42,8 +42,12 @@ class SupabasePacklistRepositoryImpl implements PacklistRepositoryInterface {
 
   @override
   Future<Packplan?> getPackplanById(int id) {
-    // TODO: implement getPackplanById
-    throw UnimplementedError();
+    return _supabaseService.getPackPlanById(id).then((data) {
+      if (data != null) {
+        return PackplanDto.fromJson(data).toDomain();
+      }
+      return null;
+    });
   }
 
   @override
