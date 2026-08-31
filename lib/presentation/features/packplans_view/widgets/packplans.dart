@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_supabase_pack/core/service_locator.dart';
 import 'package:flutter_supabase_pack/core/utils/extensions/datetime_extensions.dart';
+import 'package:flutter_supabase_pack/data/repositories/packlist_repo/packlist_repository_interface.dart';
 import 'package:flutter_supabase_pack/presentation/features/packplans_view/viewmodel/packplans_cubit.dart';
 import 'package:flutter_supabase_pack/presentation/features/packplans_view/viewmodel/packplans_state.dart';
 import 'package:flutter_supabase_pack/routing/app_routes/all_app_routes.dart';
@@ -13,7 +15,10 @@ class Packplans extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _PackplansView();
+    return BlocProvider(
+      create: (context) => PackplansCubit(sl<PacklistRepositoryInterface>())..startListeningToPackplansStream(),
+      child: const _PackplansView(),
+    );
   }
 }
 
@@ -67,8 +72,7 @@ class _PackplansView extends StatelessWidget {
                               backgroundColor: WidgetStateProperty.all(const Color.fromARGB(255, 95, 201, 205)),
                             ),
                             onPressed: () {
-                              packplansCubit.selectPackplan(packplan.id!);
-                              context.go(Destinations.crudPackplan, extra: packplansCubit);
+                              context.go(Destinations.crudPackplan);
                             },
                             child: Text('Open'),
                           ),
@@ -97,8 +101,7 @@ class _PackplansView extends StatelessWidget {
         children: [
           FloatingActionButton(
             onPressed: () {
-              packplansCubit.selectPackplan(null);
-              context.go(Destinations.crudPackplan, extra: packplansCubit);
+              context.go(Destinations.crudPackplan);
             },
             mini: true,
             child: const Icon(Icons.add),
