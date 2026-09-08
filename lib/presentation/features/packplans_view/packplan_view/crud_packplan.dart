@@ -9,6 +9,7 @@ import 'package:flutter_supabase_pack/domain/models/gear.dart';
 import 'package:flutter_supabase_pack/domain/models/packplan_item.dart';
 import 'package:flutter_supabase_pack/presentation/features/packplans_view/packplan_view/crud_packplan_cubit.dart';
 import 'package:flutter_supabase_pack/presentation/features/packplans_view/packplan_view/crud_packplan_state.dart';
+import 'package:flutter_supabase_pack/presentation/features/packplans_view/packplan_view/packplan_weight_pie_chart.dart';
 import 'package:flutter_supabase_pack/routing/app_routes/all_app_routes.dart';
 import 'package:go_router/go_router.dart';
 
@@ -274,68 +275,82 @@ class _PackplansViewState extends State<_PackplansView> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ExpansionTile(
-                    initiallyExpanded: false,
-                    title: Row(
-                      children: [
-                        const Text("Details"),
-                        const SizedBox(width: 16),
-                        Text(
-                          "Total: ${state.totalWeight.toStringAsFixed(0)} g",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    children: [
-                      TextField(
-                        controller: _nameController,
-                        decoration: const InputDecoration(labelText: 'Navn'),
-                      ),
-                      TextField(
-                        controller: _descriptionController,
-                        decoration: const InputDecoration(labelText: 'Description'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
                   Expanded(
-                    child: grouped.isEmpty
-                        ? const Center(child: Text("No gear in this pack plan yet."))
-                        : ListView(
-                            children: grouped.entries.map((entry) {
-                              final type = entry.key;
-                              final items = entry.value;
-                              return ExpansionTile(
-                                title: Text(type),
-                                children: items.map((item) {
-                                  return ListTile(
-                                    title: Text(item.gear.name),
-                                    subtitle: Text(item.gear.description),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        IconButton(
-                                          icon: const Icon(Icons.remove),
-                                          onPressed: () => cubit.decrementQuantity(item),
-                                        ),
-                                        Text('${item.quantity}'),
-                                        IconButton(
-                                          icon: const Icon(Icons.add),
-                                          onPressed: () => cubit.incrementQuantity(item),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text('${item.gear.grams * item.quantity} g'),
-                                        IconButton(
-                                          icon: const Icon(Icons.delete, color: Colors.red),
-                                          onPressed: () => cubit.removeGear(item),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
-                              );
-                            }).toList(),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ExpansionTile(
+                            initiallyExpanded: false,
+                            title: Row(
+                              children: [
+                                const Text("Details"),
+                                const SizedBox(width: 16),
+                                Text(
+                                  "Total: ${state.totalWeight.toStringAsFixed(0)} g",
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            children: [
+                              TextField(
+                                controller: _nameController,
+                                decoration: const InputDecoration(labelText: 'Navn'),
+                              ),
+                              TextField(
+                                controller: _descriptionController,
+                                decoration: const InputDecoration(labelText: 'Description'),
+                              ),
+                              const SizedBox(height: 16),
+                              PackplanWeightPieChart(gearList: state.gearList),
+                            ],
                           ),
+                          const SizedBox(height: 16),
+                          grouped.isEmpty
+                              ? const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 32),
+                                  child: Center(child: Text("No gear in this pack plan yet.")),
+                                )
+                              : ListView(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  children: grouped.entries.map((entry) {
+                                    final type = entry.key;
+                                    final items = entry.value;
+                                    return ExpansionTile(
+                                      title: Text(type),
+                                      children: items.map((item) {
+                                        return ListTile(
+                                          title: Text(item.gear.name),
+                                          subtitle: Text(item.gear.description),
+                                          trailing: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(Icons.remove),
+                                                onPressed: () => cubit.decrementQuantity(item),
+                                              ),
+                                              Text('${item.quantity}'),
+                                              IconButton(
+                                                icon: const Icon(Icons.add),
+                                                onPressed: () => cubit.incrementQuantity(item),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text('${item.gear.grams * item.quantity} g'),
+                                              IconButton(
+                                                icon: const Icon(Icons.delete, color: Colors.red),
+                                                onPressed: () => cubit.removeGear(item),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList(),
+                                    );
+                                  }).toList(),
+                                ),
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Row(
