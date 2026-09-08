@@ -131,34 +131,67 @@ class _PackplansViewState extends State<_PackplansView> {
                                 itemBuilder: (c, i) {
                                   final g = filtered[i];
                                   final isSelected = selectedIds.contains(g.id);
-                                  return ListTile(
-                                    leading: Checkbox(
-                                      value: isSelected,
-                                      onChanged: (v) => setState(() => v == true ? selectedIds.add(g.id!) : selectedIds.remove(g.id)),
-                                    ),
-                                    title: Text(g.name),
-                                    subtitle: Text('${g.grams} g — ${g.description}'),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        IconButton(
-                                          icon: const Icon(Icons.remove),
-                                          onPressed: () => setState(() {
-                                            final current = quantities[g.id] ?? 1;
-                                            if (current > 1) quantities[g.id!] = current - 1;
-                                          }),
+                                  return Card(
+                                    margin: const EdgeInsets.symmetric(vertical: 4),
+                                    child: InkWell(
+                                      onTap: () => setState(
+                                          () => isSelected ? selectedIds.remove(g.id) : selectedIds.add(g.id!)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Checkbox(
+                                                  value: isSelected,
+                                                  onChanged: (v) => setState(
+                                                      () => v == true ? selectedIds.add(g.id!) : selectedIds.remove(g.id)),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    g.name,
+                                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                                  ),
+                                                ),
+                                                Text('${g.grams} g'),
+                                              ],
+                                            ),
+                                            if (g.description.isNotEmpty)
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 48, right: 8, bottom: 4),
+                                                child: Text(
+                                                  g.description,
+                                                  style: Theme.of(context).textTheme.bodySmall,
+                                                ),
+                                              ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 40, bottom: 4),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  IconButton(
+                                                    icon: const Icon(Icons.remove),
+                                                    onPressed: () => setState(() {
+                                                      final current = quantities[g.id] ?? 1;
+                                                      if (current > 1) quantities[g.id!] = current - 1;
+                                                    }),
+                                                  ),
+                                                  Text('${quantities[g.id] ?? 1}'),
+                                                  IconButton(
+                                                    icon: const Icon(Icons.add),
+                                                    onPressed: () => setState(() {
+                                                      final current = quantities[g.id] ?? 1;
+                                                      quantities[g.id!] = current + 1;
+                                                    }),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Text('${quantities[g.id] ?? 1}'),
-                                        IconButton(
-                                          icon: const Icon(Icons.add),
-                                          onPressed: () => setState(() {
-                                            final current = quantities[g.id] ?? 1;
-                                            quantities[g.id!] = current + 1;
-                                          }),
-                                        ),
-                                      ],
+                                      ),
                                     ),
-                                    onTap: () => setState(() => isSelected ? selectedIds.remove(g.id) : selectedIds.add(g.id!)),
                                   );
                                 },
                               ),
