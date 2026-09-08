@@ -28,14 +28,18 @@ class PackplanDto {
     );
   }
 
+  /// JSON for inserting/updating the `packplan` row itself.
+  /// Supabase/Postgrest does not support nested inserts into relation
+  /// tables via this shape, so `gear_packplan` is intentionally excluded.
+  /// Gear items are persisted separately via the `gear_packplan` table.
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
+    final json = <String, dynamic>{
       'created_at': createdAt?.toIso8601String(),
       'description': description,
       'name': name,
-      'gearList': gearList?.map((item) => item.toJson()).toList(),
     };
+    if (id != null) json['id'] = id;
+    return json;
   }
 
 }
