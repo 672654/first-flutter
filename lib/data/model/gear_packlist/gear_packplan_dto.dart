@@ -22,7 +22,20 @@ class GearPackplanDto {
   Map<String, dynamic> toJson() {
     return {
       'quantity': quantity,
-      'gearDto': gearDto.toJson(),
+      // Nest gear by id so Supabase can link to existing gear row when inserting nested records
+      'gear': {
+        'id': gearDto.id,
+      },
+    };
+  }
+
+  /// Flat JSON shape used to insert a row directly into the `gear_packplan`
+  /// join table, which has columns `packplan_id`, `gear_id` and `quantity`.
+  Map<String, dynamic> toJoinTableJson(int packplanId) {
+    return {
+      'packplan_id': packplanId,
+      'gear_id': gearDto.id,
+      'quantity': quantity,
     };
   }
 

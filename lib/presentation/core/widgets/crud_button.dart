@@ -39,21 +39,11 @@ class CrudButton extends StatelessWidget {
       );
     }
 
-    // 2. Sletting krever Long Press for sikkerhet, de andre krever vanlig trykk
+    // 2. Sletting krever bekreftelse for sikkerhet, de andre krever vanlig trykk
     if (type == CrudType.delete) {
       return FilledButton.tonal(
         style: style,
-        onPressed: () {
-          // Viser en advarsel om å holde inne
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Hold to delete'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        },
-        onLongPress: action, // Kjører handlingen ved langt trykk
+        onPressed: () => _confirmDelete(context),
         child: Text(label),
       );
     }
@@ -64,6 +54,33 @@ class CrudButton extends StatelessWidget {
       onPressed: action, // Kjører handlingen ved vanlig trykk
       child: Text(label),
     );
+  }
+
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Er du sikker?'),
+        content: const Text('Denne handlingen kan ikke angres.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Avbryt'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(ctx).colorScheme.errorContainer,
+              foregroundColor: Theme.of(ctx).colorScheme.onErrorContainer,
+            ),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Slett'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      action();
+    }
   }
 
   // Hjelpemetode for standardtekst

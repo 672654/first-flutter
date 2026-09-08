@@ -11,9 +11,6 @@ class SupabasePacklistRepositoryImpl implements PacklistRepositoryInterface {
 
   SupabasePacklistRepositoryImpl(this._supabaseService);
 
-  static const _packlistSelect = '*, pakningsplan_utstyr(*, gear(*))';
-
-
   @override
   Future<List<Packplan>> getAllPackplans() async {
     try {
@@ -41,32 +38,39 @@ class SupabasePacklistRepositoryImpl implements PacklistRepositoryInterface {
   }
 
   @override
-  Future<Packplan?> getPackplanById(int id) {
-    return _supabaseService.getPackPlanById(id).then((data) {
-      if (data != null) {
-        return PackplanDto.fromJson(data).toDomain();
-      }
-      return null;
-    });
+  Future<Packplan?> getPackplanById(int id) async {
+    final data = await _supabaseService.getPackPlanById(id);
+    if (data == null) return null;
+    return PackplanDto.fromJson(data).toDomain();
   }
 
   @override
-  Future<Packplan?> createPackplan(Packplan packplan) {
-    // TODO: implement createPackplan
-    throw UnimplementedError();
+  Future<Packplan?> createPackplan(Packplan packplan) async {
+    final dto = packplan.toDto();
+    final inserted = await _supabaseService.addPackplan(dto.toJson());
+    final packplanId = inserted['id'] as int;
 
+    final rows = dto.gearList?.map((g) => g.toJoinTableJson(packplanId)).toList() ?? [];
+    await _supabaseService.addGearPackplanRows(rows);
 
+    final full = await _supabaseService.getPackPlanById(packplanId);
+    return full == null ? null : PackplanDto.fromJson(full).toDomain();
   }
 
   @override
-  Future<void> updatePackplan(Packplan packplan) {
-    // TODO: implement updatePackplan
-    throw UnimplementedError();
+  Future<void> updatePackplan(Packplan packplan) async {
+    final dto = packplan.toDto();
+    final id = packplan.id!;
+    await _supabaseService.updatePackplan(id, dto.toJson());
+
+    // Replace gear_packplan rows for this packplan.
+    await _supabaseService.deleteGearPackplanRows(id);
+    final rows = dto.gearList?.map((g) => g.toJoinTableJson(id)).toList() ?? [];
+    await _supabaseService.addGearPackplanRows(rows);
   }
 
   @override
   Future<void> deletePackplan(int id) {
-    // TODO: implement deletePackplan
-    throw UnimplementedError();
+  return _supabaseService.deletePackplan(id);
   }
 }

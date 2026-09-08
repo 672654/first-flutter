@@ -72,7 +72,9 @@ final packplanBranch = StatefulShellBranch(
         GoRoute(
           path: Destinations.crudPackplanSubPath,
           builder: (context, state) {
-            return const CrudPackplan();
+            final idParam = state.uri.queryParameters['id'];
+            final packplanId = idParam != null ? int.tryParse(idParam) : null;
+            return CrudPackplan(packplanId: packplanId);
           },
         ),
       ],
