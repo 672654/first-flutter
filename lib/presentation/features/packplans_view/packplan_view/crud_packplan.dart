@@ -100,7 +100,9 @@ class _PackplansViewState extends State<_PackplansView> {
                 // selected type. Only apply the type filter when the
                 // search box is empty.
                 var filtered = search.isNotEmpty
-                    ? allGear.where((g) => g.name.toLowerCase().contains(search.toLowerCase())).toList()
+                    ? allGear.where((g) =>
+                        g.name.toLowerCase().contains(search.toLowerCase()) ||
+                        g.brand.toLowerCase().contains(search.toLowerCase())).toList()
                     : allGear.where((g) => selectedType == null || g.type == selectedType).toList();
 
               return AlertDialog(
@@ -157,6 +159,14 @@ class _PackplansViewState extends State<_PackplansView> {
                                                 Text('${g.grams} g'),
                                               ],
                                             ),
+                                            if (g.brand.isNotEmpty)
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 48, right: 8, bottom: 4),
+                                                child: Text(
+                                                  g.brand,
+                                                  style: Theme.of(context).textTheme.bodySmall,
+                                                ),
+                                              ),
                                             if (g.description.isNotEmpty)
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 48, right: 8, bottom: 4),
@@ -280,12 +290,10 @@ class _PackplansViewState extends State<_PackplansView> {
                       TextField(
                         controller: _nameController,
                         decoration: const InputDecoration(labelText: 'Navn'),
-                        onChanged: cubit.updateName,
                       ),
                       TextField(
                         controller: _descriptionController,
                         decoration: const InputDecoration(labelText: 'Description'),
-                        onChanged: cubit.updateDescription,
                       ),
                     ],
                   ),
@@ -344,7 +352,10 @@ class _PackplansViewState extends State<_PackplansView> {
                       ),
                       const Spacer(),
                       ElevatedButton(
-                        onPressed: () => cubit.savePackPlan(),
+                        onPressed: () => cubit.savePackPlan(
+                          name: _nameController.text,
+                          description: _descriptionController.text,
+                        ),
                         child: const Text('Save'),
                       ),
                     ],

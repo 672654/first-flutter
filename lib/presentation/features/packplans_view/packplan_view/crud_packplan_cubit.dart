@@ -29,13 +29,11 @@ class PackPlanCubit extends Cubit<PackPlanState> {
     }
   }
 
-  void updateDescription(String desc) {
-    emit(state.copyWith(description: desc));
-  }
-
-  void updateName(String name) {
-    emit(state.copyWith(name: name));
-  }
+  // Navn og beskrivelse holdes lokalt i UI (TextEditingController) og
+  // sendes kun til Cubit ved lagring. Å emitte ny state for hvert
+  // tastetrykk tvinger frem en full rebuild av skjemaet, noe som
+  // forstyrrer tastaturets IME/komponering (spesielt med æøå og
+  // autofullføring) og gir "bokstavene kommer baklengs"-oppførsel.
 
   void addGear(PackplanItem item) {
     final updated = List<PackplanItem>.from(state.gearList)..add(item);
@@ -87,13 +85,13 @@ class PackPlanCubit extends Cubit<PackPlanState> {
     ));
   }
 
-  Future<void> savePackPlan() async {
+  Future<void> savePackPlan({required String name, required String description}) async {
     emit(state.copyWith(status: PackplanStatus.loading));
     final packplan = Packplan(
       id: state.id,
       createdAt: DateTime.now(),
-      description: state.description,
-      name: state.name,
+      description: description,
+      name: name,
       gearList: state.gearList,
     );
     try {
