@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
       ),
       bottomSheet: const Padding(
         padding: EdgeInsets.all(16.0),
-        child: Text('v.1.0.0'),
+        child: Text('v.1.0.1'),
       ),
     );
   }

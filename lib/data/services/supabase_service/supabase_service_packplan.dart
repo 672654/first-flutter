@@ -26,6 +26,8 @@ class SupabaseServicePackplan {
         .from('packplan')
         .stream(primaryKey: ['id'])
         .asyncMap((_) => getAllPackplans());
+
+        
   }
 
   Future<Map<String, dynamic>?> getPackPlanById(int id) async {

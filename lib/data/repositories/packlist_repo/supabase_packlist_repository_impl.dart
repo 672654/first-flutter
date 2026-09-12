@@ -4,6 +4,7 @@ import 'package:flutter_supabase_pack/data/model/packplan/packplan_mapper.dart';
 import 'package:flutter_supabase_pack/data/repositories/packlist_repo/packlist_repository_interface.dart';
 import 'package:flutter_supabase_pack/data/services/supabase_service/supabase_service_packplan.dart';
 import 'package:flutter_supabase_pack/domain/models/packplan.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabasePacklistRepositoryImpl implements PacklistRepositoryInterface {
 
@@ -31,9 +32,15 @@ class SupabasePacklistRepositoryImpl implements PacklistRepositoryInterface {
       final dtos = data.map((item) => PackplanDto.fromJson(item)).toList();
       return dtos.map((dto) => dto.toDomain()).toList();
     }).handleError((error) {
-      // Handle error
       final errorString = error.toString().toLowerCase();
-      throw Exception('Error occurred while streaming packplans: $errorString');
+      if (error is RealtimeSubscribeException ||
+          errorString.contains('websocket') ||
+          errorString.contains('channel')) {
+        //Gjør ingen ting
+        return;
+      } else {
+        throw Exception('Error occurred while streaming packplans: $errorString');
+      }
     });
   }
 
