@@ -29,12 +29,14 @@ void startListeningToGearStream() {
     _gearStreamSubscription?.cancel();
 
     _gearStreamSubscription = _repo.streamAllGear().listen((gearList) {
+      // ignore: avoid_print
+      print('[GearCubit2] Stream emitted ${gearList.length} gear items');
       final Map<String, List<Gear>> gearByType = {
         for (final type in GearType.values) type.name.capitalize(): []
       };
       
       for (final gear in gearList) {
-        final type = gear.type ?? GearType.other;
+        final type = gear.type;
         final upperCaseFirstLetter = type.name.capitalize();
         gearByType[upperCaseFirstLetter]?.add(gear);
       }
@@ -42,9 +44,11 @@ void startListeningToGearStream() {
       emit(state.copyWith(
         status: GearStatus.loaded,
         gearByType: gearByType,
-        errorMessage: null, // Nullstiller feilmelding ved suksess
+        errorMessage: null,
       ));
     }, onError: (error) {
+      // ignore: avoid_print
+      print('[GearCubit2] Stream ERROR: $error');
       final errorString = error.toString().toLowerCase();
       if (error is RealtimeSubscribeException ||
           errorString.contains('websocket') ||
