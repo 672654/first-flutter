@@ -75,6 +75,11 @@ class _AddGearModalState extends State<AddGearModal2> {
             decoration: const InputDecoration(labelText: 'Merke'),
           ),
 
+          TextField(
+            controller: _descriptionController,
+            decoration: const InputDecoration(labelText: 'Beskrivelse'),
+          ),
+
           DropdownButtonFormField<GearType>(
             value: _selectedType,
             decoration: const InputDecoration(labelText: 'Kategori'),
