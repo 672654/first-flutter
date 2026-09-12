@@ -68,6 +68,7 @@ class _AddGearModalState extends State<AddGearModal2> {
           TextField(
             controller: _nameController,
             decoration: const InputDecoration(labelText: 'Navn'),
+            
            
           ),
           TextField(
